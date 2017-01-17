@@ -3,7 +3,7 @@ import humps from 'humps'
 const actions = {
   connect: (data, app) => ({
     types,
-    type: `API_CONNECT`
+    type: `API_CONNECT`,
     app,
     data
   }),
