@@ -1,0 +1,33 @@
+{
+  "name": "redux-ws-server",
+  "description": "Provides the server-side websocket connection that allows redux actions dispatched from a client to be processed by the server.",
+  "version": "0.0.1",
+  "author": "Daniel Deak",
+  "license": "UNLICENSED",
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "main": "build/index.js",
+  "scripts": {
+    "build": "babel --presets latest,stage-2 -d build/ src/",
+    "prepublish": "npm run build"
+  },
+  "dependencies": {
+    "@gp-technical/stack-saml": "0.0.11",
+    "humps": "^1.1.0",
+    "socket.io": "^1.4.8",
+  },
+  "devDependencies": {
+    "babel-cli": "^6.16.0",
+    "babel-core": "^6.16.0",
+    "babel-eslint": "^7.0.0",
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-stage-2": "^6.17.0",
+    "eslint": "^3.6.1",
+    "eslint-config-standard": "^6.1.0",
+    "eslint-plugin-promise": "^3.3.0",
+    "eslint-plugin-standard": "^2.0.0"
+  }
+}
