@@ -1,7 +1,7 @@
 {
   "name": "redux-ws-server",
   "description": "Provides the server-side websocket connection that allows redux actions dispatched from a client to be processed by the server.",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "Daniel Deak",
   "license": "UNLICENSED",
   "homepage": "",
