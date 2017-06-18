@@ -1,48 +1,44 @@
 import server from 'socket.io'
-import { actions, customAction } from './action'
+import { connect, response } from './actions'
 
-var io
+let io
 
-const connect = (services, httpServer) => {
+const start = (services, httpServer) => {
   return new Promise(resolve => {
     io = server.listen(httpServer)
-    io.on('connection', app => {
-      dispatch(actions.connect(app.request.user, app.id))
 
-      for (let current of Object.keys(services)) {
-        if (!services[current].initialiser) continue
+    io.on('connection', client => {
+      dispatch(connect(client.request.user, client.id))
 
-        services[current].initialiser().then((results) => {
-          dispatch(customAction(current + '_init', results, app.id))
-        })
-      }
+      client.on('redux websocket client message', (action, next) => {
+        if (!action.clientId) action.clientId = client.id
 
-      app.on('client_message', (action, next) => {
-        if (!action.app) action.app = app.id
         for (let key in services) {
-          var processor = services[key].processor
-          if (!processor) continue
-          processor(action, next, data => broadcastOthers(app, actions.response(action, data)))
+          let handler = services.handler
+          if (!handler) continue
+          handler(action, next, data => broadcastOthers(client, response(action, data)))
         }
       })
     })
+
+    console.info('Websocket Server established successfully.')
     resolve(io)
   })
 }
 
 const dispatch = (action) => {
-  if (!action.app) {
-    console.error('Error: the action being dispatch from the API has no App property.')
+  if (!action.clientId) {
+    console.error('Error: the action being dispatch from the API has no clientId property.')
     return
   }
 
   action.fromServer = true
-  io.to(action.app).emit('server_message', action)
+  io.to(action.clientId).emit('redux websocket server message', action)
 }
 
-const broadcastOthers = (app, action) => {
+const broadcastOthers = (client, action) => {
   action.fromServer = true
-  app.broadcast.emit('server_message', action)
+  client.broadcast.emit('server_message', action)
 }
 
-export default connect
+export default start

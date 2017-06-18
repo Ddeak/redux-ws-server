@@ -1,4 +1,6 @@
-import connect from './api'
-import makeProcessor from './makeProcessor'
+import start from './api'
+import makeHandler from './makeHandler'
 
-export { connect, makeProcessor }
+export const MakeHandler = makeHandler
+
+export default start

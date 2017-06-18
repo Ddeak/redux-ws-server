@@ -15,7 +15,6 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "@gp-technical/stack-saml": "0.0.11",
     "humps": "^1.1.0",
     "socket.io": "^1.4.8"
   },
