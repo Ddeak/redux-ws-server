@@ -3,7 +3,7 @@ import { connect, response } from './actions'
 
 let io
 
-const start = (services, httpServer) => {
+const start = (handlers, httpServer) => {
   return new Promise(resolve => {
     io = server.listen(httpServer)
 
@@ -13,10 +13,8 @@ const start = (services, httpServer) => {
       client.on('redux websocket client message', (action, next) => {
         if (!action.clientId) action.clientId = client.id
 
-        for (let key in services) {
-          let handler = services.handler
-          if (!handler) continue
-          handler(action, next, data => broadcastOthers(client, response(action, data)))
+        for (let handler of handlers) {
+          handler(action, next, (data) => broadcastOthers(client, response(action, data)))
         }
       })
     })
@@ -38,7 +36,7 @@ const dispatch = (action) => {
 
 const broadcastOthers = (client, action) => {
   action.fromServer = true
-  client.broadcast.emit('server_message', action)
+  client.broadcast.emit('redux websocket server message', action)
 }
 
 export default start
