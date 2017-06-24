@@ -3,25 +3,26 @@ import { connect, response } from './actions'
 
 let io
 
-const start = (handlers, httpServer) => {
-  return new Promise(resolve => {
-    io = server.listen(httpServer)
+const start = async (httpServer, handlers, initialiser) => {
+  io = server.listen(httpServer)
 
-    io.on('connection', client => {
-      dispatch(connect(client.request.user, client.id))
+  io.on('connection', async (client) => {
+    let initialData = {}
+    if (initialiser) initialData = await initialiser()
 
-      client.on('redux websocket client message', (action, next) => {
-        if (!action.clientId) action.clientId = client.id
+    dispatch(connect(client.id, initialData))
 
-        for (let handler of handlers) {
-          handler(action, next, (data) => broadcastOthers(client, response(action, data)))
-        }
-      })
+    client.on('redux websocket client message', (action, next) => {
+      if (!action.clientId) action.clientId = client.id
+
+      for (let handler of handlers) {
+        handler(action, next, (data) => broadcastOthers(client, response(action, data)))
+      }
     })
-
-    console.info('Websocket Server established successfully.')
-    resolve(io)
   })
+
+  console.info('Websocket Server established successfully.')
+  return io
 }
 
 const dispatch = (action) => {

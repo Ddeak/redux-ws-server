@@ -1,6 +1,6 @@
 import humps from 'humps'
 
-export const connect = (data, clientId) => ({
+export const connect = (clientId, data) => ({
   type: `SERVER_CONNECT`,
   clientId,
   data
